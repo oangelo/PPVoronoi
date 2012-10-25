@@ -16,8 +16,8 @@
 #include <stdio.h>
 #include <search.h>
 #include <malloc.h>
-#include "VoronoiDiagramGenerator.h"
 
+#include "VoronoiDiagramGenerator.h"
 
 
 int main(int argc,char **argv) 
