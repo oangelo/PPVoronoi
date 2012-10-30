@@ -95,10 +95,9 @@ TEST(BruteForce, CellHalfCircle) {
     EXPECT_EQ(neighbors.size(), 5);
 }
 
-TEST(BruteForce, CellCircle) {
+TEST(BruteForce, CellCircleCenter) {
     data_points points;
 
-    Point point({0, 0});
 
     points.push_back({cos(0), sin(0)});
     points.push_back({cos(45 * M_PI / 180.0), sin(45 * M_PI / 180.0)});
@@ -109,9 +108,36 @@ TEST(BruteForce, CellCircle) {
     points.push_back({cos(225 * M_PI / 180.0), sin(225 * M_PI / 180.0)});
     points.push_back({cos(270 * M_PI / 180.0), sin(270 * M_PI / 180.0)});
     points.push_back({cos(315 * M_PI / 180.0), sin(315 * M_PI / 180.0)});
+    points.push_back({0, 0});
+    //Point point({0, 0});
 
-    auto neighbors(CellNeighbors(points, point));
+    auto neighbors(CellNeighbors(points, points[8]));
     EXPECT_EQ(neighbors.size(), 8);
+}
+
+TEST(BruteForce, CellCircleBorder) {
+    data_points points;
+
+
+    points.push_back({cos(0), sin(0)});
+    points.push_back({cos(45 * M_PI / 180.0), sin(45 * M_PI / 180.0)});
+    points.push_back({0, 1});
+    points.push_back({cos(135 * M_PI / 180.0), sin(135 * M_PI / 180.0)});
+    points.push_back({cos(180 * M_PI / 180.0), sin(180 * M_PI / 180.0)});
+
+    points.push_back({cos(225 * M_PI / 180.0), sin(225 * M_PI / 180.0)});
+    points.push_back({cos(270 * M_PI / 180.0), sin(270 * M_PI / 180.0)});
+    points.push_back({cos(315 * M_PI / 180.0), sin(315 * M_PI / 180.0)});
+    points.push_back({0, 0});
+    //Point point({0, 0});
+
+    EXPECT_EQ((CellNeighbors(points, points[0])).size(), 3);
+    EXPECT_EQ((CellNeighbors(points, points[1])).size(), 3);
+    EXPECT_EQ((CellNeighbors(points, points[2])).size(), 3);
+    EXPECT_EQ((CellNeighbors(points, points[3])).size(), 3);
+    EXPECT_EQ((CellNeighbors(points, points[5])).size(), 3);
+    EXPECT_EQ((CellNeighbors(points, points[6])).size(), 3);
+    EXPECT_EQ((CellNeighbors(points, points[7])).size(), 3);
 }
 
 TEST(BruteForce, CellSquare) {
@@ -135,6 +161,46 @@ TEST(BruteForce, CellSquare) {
     EXPECT_EQ(neighbors.size(), 4);
 }
 
+TEST(BruteForce, CellSquareCorner) {
+    data_points points;
+
+
+    points.push_back({0, 0});
+
+    points.push_back({0, 1});
+    points.push_back({0.0, 2.0});
+
+    points.push_back({0, -1});
+    points.push_back({0, -2});
+
+    points.push_back({1, 0});
+    points.push_back({2, 0});
+
+    points.push_back({-1, 0});
+    points.push_back({-2, 0});
+
+    auto neighbors(CellNeighbors(points, points[3]));
+    EXPECT_EQ(neighbors.size(), 5);
+}
+
+TEST(BruteForce, CellTriangle) {
+    data_points points;
+
+
+    points.push_back({0, 0});
+
+    points.push_back({0, 1});
+
+    points.push_back({0, -1});
+
+    points.push_back({1, 0});
+
+
+    EXPECT_EQ((CellNeighbors(points, points[0])).size(), 3);
+    EXPECT_EQ((CellNeighbors(points, points[1])).size(), 2);
+    EXPECT_EQ((CellNeighbors(points, points[2])).size(), 2);
+    EXPECT_EQ((CellNeighbors(points, points[3])).size(), 3);
+}
 
 int main(int argc, char *argv[])
 {

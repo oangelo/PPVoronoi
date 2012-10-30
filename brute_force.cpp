@@ -37,13 +37,22 @@ std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points
     std::vector<Point*> neighborhood_left;
     std::vector<Point*> neighbors;
 
-    //starting the neighborhood and the line
     Point* nearest_neighbor(&NearestNeighbor(neighborhood, point));
     neighbors.push_back(nearest_neighbor);
+
+    //removing the point from the neighborhood
+    std::vector<Point*>::iterator position = std::find(neighborhood.begin(), neighborhood.end(), &point);
+    if(position != neighborhood.end())
+        neighborhood.erase(position);
+    //removing the nearest neighbor from the neighborhood
+    position = std::find(neighborhood.begin(), neighborhood.end(), &point);
+    if(position != neighborhood.end())
+        neighborhood.erase(position);
+
+    //starting the neighborhood and the line
     Vector direction_init(GenVector(point, *nearest_neighbor));
     auto half_direction_init(direction_init / 2.0);
     Straight first_line(direction_init, half_direction_init + point);
-
 
     Straight midle_line_right(NormalVector(direction_init), point);
     DivideDots(midle_line_right, neighborhood, neighborhood_right, neighborhood_left);
@@ -61,11 +70,7 @@ std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points
     Straight line(first_line);
     Straight side(midle_line_right);
     while(flag){
-        std::cout << "line vec: "<< line.get_normal() << std::endl;
-        std::cout << "line point: "<< line.get_point() << std::endl;
-        std::cout << "side: "<< side.get_normal() << std::endl;
-        std::cout << "side point: "<< side.get_point() << std::endl;
-        for(auto iten: neighborhood_right)
+       for(auto iten: neighborhood_right)
             std::cout << "points: "<< (*iten) << std::endl;
 
         element = LineCross(line, point, side, neighborhood_right);
@@ -75,10 +80,16 @@ std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points
             auto half_direction(direction / 2.0);
             line = Straight(direction, half_direction + point);
             side = Straight(normal, *element);
+
+        std::cout << "line vec: "<< line.get_normal() << std::endl;
+        std::cout << "line point: "<< line.get_point() << std::endl;
+        std::cout << "side: "<< side.get_normal() << std::endl;
+        std::cout << "side point: "<< side.get_point() << std::endl;
+ 
+            std::cout << "element: "<< (*element) << std::endl;
             std::cout << "encontro " << (line == side) << std::endl;
             neighbors.push_back(element);
             neighborhood_right = OnNormalSide(side, neighborhood_right);
-            std::cout << "element: "<< (*element) << std::endl;
         }else{
             flag = false; 
         }
