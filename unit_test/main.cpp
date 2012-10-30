@@ -80,7 +80,7 @@ TEST(BruteForce, LineCross3) {
 }
 
 //*
-TEST(BruteForce, CellHalf) {
+TEST(BruteForce, CellHalfCircle) {
     data_points points;
 
     Point point({0, 0});
@@ -95,7 +95,7 @@ TEST(BruteForce, CellHalf) {
     EXPECT_EQ(neighbors.size(), 5);
 }
 
-TEST(BruteForce, Cell) {
+TEST(BruteForce, CellCircle) {
     data_points points;
 
     Point point({0, 0});
@@ -113,11 +113,11 @@ TEST(BruteForce, Cell) {
     auto neighbors(CellNeighbors(points, point));
     EXPECT_EQ(neighbors.size(), 8);
 }
-/*
-TEST(BruteForce, Neighbors) {
+
+TEST(BruteForce, CellSquare) {
     data_points points;
 
-    points.push_back({0, 0});
+    Point point({0.00, 0.00});
 
     points.push_back({0, 1});
     points.push_back({0, 2});
@@ -131,18 +131,11 @@ TEST(BruteForce, Neighbors) {
     points.push_back({-1, 0});
     points.push_back({-2, 0});
 
-    Voronoi voro(points);
-//    voro.neighbors();
-    auto neighbors(voro.neighbors());
-    std::cout << neighbors.size() << std::endl;
-    //for(auto iten(neighbors.begin()); iten < neighbors.end(); ++iten)
-     //   std::cout << (*iten).first.size() << std::endl;
-//    for(auto &iten: neighbors)
-//        std::cout << ((iten.second)).size() << std::endl;
-
+    auto neighbors(CellNeighbors(points, point));
+    EXPECT_EQ(neighbors.size(), 4);
 }
 
-//*/
+
 int main(int argc, char *argv[])
 {
     testing::InitGoogleTest(&argc, argv);

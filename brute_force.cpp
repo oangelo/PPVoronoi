@@ -31,27 +31,31 @@ std::unordered_map<geometry::Point*, std::set<geometry::Point*>> BruteForce::Vor
 std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points& points, geometry::Point& point) { 
 
     using namespace geometry;
+    //storing data
     std::vector<Point*> neighborhood(ToPointers(points));
-    std::vector<Point*> neighborhood_left(ToPointers(points));
+    std::vector<Point*> neighborhood_right;
+    std::vector<Point*> neighborhood_left;
     std::vector<Point*> neighbors;
 
-    std::cout << "neighborhood.size "<< neighborhood.size() << std::endl;
     //starting the neighborhood and the line
-    Point* neighbor_aux(&NearestNeighbor(neighborhood, point));
-    neighbors.push_back(neighbor_aux);
-    std::cout << "n neighbors " << neighbors.size() <<  std::endl;
-    Vector direction_init(GenVector(point, *neighbor_aux));
+    Point* nearest_neighbor(&NearestNeighbor(neighborhood, point));
+    neighbors.push_back(nearest_neighbor);
+    Vector direction_init(GenVector(point, *nearest_neighbor));
     auto half_direction_init(direction_init / 2.0);
     Straight first_line(direction_init, half_direction_init + point);
-    //right side
-    Straight midle_line_right(NormalVector(direction_init), point);
-    neighborhood = OnNormalSide(midle_line_right, neighborhood);
-    std::cout << "neigh first: "<< (*neighbor_aux)[0] << " " << (*neighbor_aux)[1] << std::endl;
-    for(auto iten: neighborhood)
-        std::cout << "points: "<< (*iten)[0] << " " << (*iten)[1] << std::endl;
-    std::cout << "neighborhood.size "<< neighborhood.size() << std::endl;
 
-    //Search the normal direction for neighbors
+
+    Straight midle_line_right(NormalVector(direction_init), point);
+    DivideDots(midle_line_right, neighborhood, neighborhood_right, neighborhood_left);
+
+    std::cout << "neighborhood size: "<< points.size() << std::endl;
+    std::cout << "first neighbor: "<< (*nearest_neighbor) << std::endl;
+    std::cout << std::endl;
+
+    //################## righ side ############################
+    std::cout << "############ right side ###############" << std::endl;
+    //neighborhood_right = OnNormalSide(midle_line_right, neighborhood_right);
+
     bool flag(true);
     Point* element(NULL);
     Straight line(first_line);
@@ -61,10 +65,10 @@ std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points
         std::cout << "line point: "<< line.get_point() << std::endl;
         std::cout << "side: "<< side.get_normal() << std::endl;
         std::cout << "side point: "<< side.get_point() << std::endl;
-        for(auto iten: neighborhood)
-            std::cout << "points: "<< (*iten)[0] << " " << (*iten)[1] << std::endl;
+        for(auto iten: neighborhood_right)
+            std::cout << "points: "<< (*iten) << std::endl;
 
-        element = LineCross(line, point, side, neighborhood);
+        element = LineCross(line, point, side, neighborhood_right);
         if(element) {
             Vector direction(GenVector(point, *element));
             Vector normal(NormalVector(direction));
@@ -73,7 +77,7 @@ std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points
             side = Straight(normal, *element);
             std::cout << "encontro " << (line == side) << std::endl;
             neighbors.push_back(element);
-            neighborhood = OnNormalSide(side, neighborhood);
+            neighborhood_right = OnNormalSide(side, neighborhood_right);
             std::cout << "element: "<< (*element) << std::endl;
         }else{
             flag = false; 
@@ -85,7 +89,7 @@ std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points
 //****************left side **************************/
     std::cout << "################# left side #######################" << std::endl;
     Straight midle_line_left(NormalVectorInverted(direction_init), point);
-    neighborhood_left = OnNormalSide(midle_line_left, neighborhood_left);
+    //neighborhood_left = OnNormalSide(midle_line_left, neighborhood_left);
     std::cout << "neig_left " <<  neighborhood_left.size() << std::endl;
 
     flag = true;
