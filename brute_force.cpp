@@ -32,17 +32,20 @@ std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points
 
     using namespace geometry;
     std::vector<Point*> neighborhood(ToPointers(points));
+    std::vector<Point*> neighborhood_left(ToPointers(points));
     std::vector<Point*> neighbors;
 
     std::cout << "neighborhood.size "<< neighborhood.size() << std::endl;
     //starting the neighborhood and the line
     Point* neighbor_aux(&NearestNeighbor(neighborhood, point));
-    //neighbors.push_back(neighbor_aux);
+    neighbors.push_back(neighbor_aux);
+    std::cout << "n neighbors " << neighbors.size() <<  std::endl;
     Vector direction_init(GenVector(point, *neighbor_aux));
     auto half_direction_init(direction_init / 2.0);
     Straight first_line(direction_init, half_direction_init + point);
-    Straight midle_line(NormalVector(direction_init), point);
-    neighborhood = OnNormalSide(midle_line, neighborhood);
+    //right side
+    Straight midle_line_right(NormalVector(direction_init), point);
+    neighborhood = OnNormalSide(midle_line_right, neighborhood);
     std::cout << "neigh first: "<< (*neighbor_aux)[0] << " " << (*neighbor_aux)[1] << std::endl;
     for(auto iten: neighborhood)
         std::cout << "points: "<< (*iten)[0] << " " << (*iten)[1] << std::endl;
@@ -52,7 +55,7 @@ std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points
     bool flag(true);
     Point* element(NULL);
     Straight line(first_line);
-    Straight side(midle_line);
+    Straight side(midle_line_right);
     while(flag){
         std::cout << "line vec: "<< line.get_normal() << std::endl;
         std::cout << "line point: "<< line.get_point() << std::endl;
@@ -75,8 +78,45 @@ std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points
         }else{
             flag = false; 
         }
+
+        std::cout << "n neighbors " << neighbors.size() <<  std::endl;
         std::cout <<  std::endl;
     }
+//****************left side **************************/
+    std::cout << "################# left side #######################" << std::endl;
+    Straight midle_line_left(NormalVectorInverted(direction_init), point);
+    neighborhood_left = OnNormalSide(midle_line_left, neighborhood_left);
+    std::cout << "neig_left " <<  neighborhood_left.size() << std::endl;
+
+    flag = true;
+    element = NULL;
+    line = first_line;
+    side = midle_line_left;
+    while(flag){
+        std::cout << "line vec: "<< line.get_normal() << std::endl;
+        std::cout << "line point: "<< line.get_point() << std::endl;
+        std::cout << "side: "<< side.get_normal() << std::endl;
+        std::cout << "side point: "<< side.get_point() << std::endl;
+        for(auto iten: neighborhood_left)
+            std::cout << "points: "<< (*iten)[0] << " " << (*iten)[1] << std::endl;
+
+        element = LineCross(line, point, side, neighborhood_left);
+        if(element) {
+            Vector direction(GenVector(point, *element));
+            Vector normal(NormalVectorInverted(direction));
+            auto half_direction(direction / 2.0);
+            line = Straight(direction, half_direction + point);
+            side = Straight(normal, *element);
+            std::cout << "encontro " << (line == side) << std::endl;
+            neighbors.push_back(element);
+            neighborhood_left = OnNormalSide(side, neighborhood_left);
+            std::cout << "element: "<< (*element) << std::endl;
+        }else{
+            flag = false; 
+        }
+        std::cout <<  std::endl;
+    }
+
     return neighbors;
 }
 

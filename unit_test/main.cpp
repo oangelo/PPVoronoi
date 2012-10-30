@@ -80,6 +80,21 @@ TEST(BruteForce, LineCross3) {
 }
 
 //*
+TEST(BruteForce, CellHalf) {
+    data_points points;
+
+    Point point({0, 0});
+
+    points.push_back({cos(0), sin(0)});
+    points.push_back({cos(45 * M_PI / 180.0), sin(45 * M_PI / 180.0)});
+    points.push_back({0, 1});
+    points.push_back({cos(135 * M_PI / 180.0), sin(135 * M_PI / 180.0)});
+    points.push_back({cos(180 * M_PI / 180.0), sin(180 * M_PI / 180.0)});
+
+    auto neighbors(CellNeighbors(points, point));
+    EXPECT_EQ(neighbors.size(), 5);
+}
+
 TEST(BruteForce, Cell) {
     data_points points;
 
@@ -90,6 +105,10 @@ TEST(BruteForce, Cell) {
     points.push_back({0, 1});
     points.push_back({cos(135 * M_PI / 180.0), sin(135 * M_PI / 180.0)});
     points.push_back({cos(180 * M_PI / 180.0), sin(180 * M_PI / 180.0)});
+
+    points.push_back({cos(225 * M_PI / 180.0), sin(225 * M_PI / 180.0)});
+    points.push_back({cos(270 * M_PI / 180.0), sin(270 * M_PI / 180.0)});
+    points.push_back({cos(315 * M_PI / 180.0), sin(315 * M_PI / 180.0)});
 
     auto neighbors(CellNeighbors(points, point));
     EXPECT_EQ(neighbors.size(), 8);
