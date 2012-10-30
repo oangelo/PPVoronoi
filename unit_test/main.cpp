@@ -8,8 +8,9 @@
 
 //*
 using namespace BruteForce;
+using namespace geometry;
 TEST(BruteForce, data_points_def) {
-    Voronoi::data_points points;
+    data_points points;
     points.push_back({1,2});
     points.push_back({3,4});
     EXPECT_EQ(points[0][0], 1);
@@ -19,7 +20,7 @@ TEST(BruteForce, data_points_def) {
 }
 
 TEST(BruteForce, constructor) {
-    Voronoi::data_points points;
+    data_points points;
     points.push_back({1,2});
     points.push_back({3,4});
     Voronoi voronoi(points);
@@ -30,8 +31,72 @@ TEST(BruteForce, constructor) {
     EXPECT_EQ(voronoi.get_points()[1][1], 4);
 }
 
+TEST(BruteForce, LineCross) {
+
+    Straight line({1, 1}, {0, 0}); 
+    Straight side({0, 1}, {0, 0}); 
+    data_points points;
+    points.push_back({0, 1});
+    points.push_back({0, 2});
+    points.push_back({2, 2});
+    points.push_back({2, 0});
+    points.push_back({-1, -1});
+    Point point({0, 0});
+    EXPECT_TRUE(LineCross(line, point, side, ToPointers(points))== &points[0]);
+}
+
+TEST(BruteForce, LineCross2) {
+
+    Straight line({1, 0}, {0.5, 0}); 
+    Straight side({0, 1}, {0.0, 0}); 
+
+    data_points points;
+//    points.push_back({cos(0), sin(0)});
+    points.push_back({cos(45 * M_PI / 180.0), sin(45 * M_PI / 180.0)});
+    points.push_back({cos(90 * M_PI / 180.0), sin(90 * M_PI / 180.0)});
+    points.push_back({cos(135 * M_PI / 180.0), sin(135 * M_PI / 180.0)});
+    points.push_back({cos(180 * M_PI / 180.0), sin(180 * M_PI / 180.0)});
+
+    Point point({0, 0});
+    Point* cross(LineCross(line, point, side, ToPointers(points)));
+    EXPECT_TRUE(cross == &points[0]);
+}
+
+TEST(BruteForce, LineCross3) {
+
+    Straight line({cos(45 * M_PI / 180.0), sin(45 * M_PI / 180.0)}, {0.5, 0.5}); 
+    Straight side({cos(135 * M_PI / 180.0), sin(135 * M_PI / 180.0)}, {0.5, 0.0}); 
+
+    std::cout << (line == side) << std::endl;
+
+    data_points points;
+    points.push_back({cos(90 * M_PI / 180.0), sin(90 * M_PI / 180.0)});
+    points.push_back({cos(135 * M_PI / 180.0), sin(135 * M_PI / 180.0)});
+    points.push_back({cos(180 * M_PI / 180.0), sin(180 * M_PI / 180.0)});
+
+    Point point({0, 0});
+    Point* cross(LineCross(line, point, side, ToPointers(points)));
+    EXPECT_TRUE(cross == &points[0]);
+}
+
+//*
 TEST(BruteForce, Cell) {
-    Voronoi::data_points points;
+    data_points points;
+
+    Point point({0, 0});
+
+    points.push_back({cos(0), sin(0)});
+    points.push_back({cos(45 * M_PI / 180.0), sin(45 * M_PI / 180.0)});
+    points.push_back({0, 1});
+    points.push_back({cos(135 * M_PI / 180.0), sin(135 * M_PI / 180.0)});
+    points.push_back({cos(180 * M_PI / 180.0), sin(180 * M_PI / 180.0)});
+
+    auto neighbors(CellNeighbors(points, point));
+    EXPECT_EQ(neighbors.size(), 8);
+}
+/*
+TEST(BruteForce, Neighbors) {
+    data_points points;
 
     points.push_back({0, 0});
 
@@ -47,10 +112,17 @@ TEST(BruteForce, Cell) {
     points.push_back({-1, 0});
     points.push_back({-2, 0});
 
-    Voronoi voronoi(points);
+    Voronoi voro(points);
+//    voro.neighbors();
+    auto neighbors(voro.neighbors());
+    std::cout << neighbors.size() << std::endl;
+    //for(auto iten(neighbors.begin()); iten < neighbors.end(); ++iten)
+     //   std::cout << (*iten).first.size() << std::endl;
+//    for(auto &iten: neighbors)
+//        std::cout << ((iten.second)).size() << std::endl;
 
-    EXPECT_EQ(voronoi.CellNeighbors(points, points[0]).size(), 4);
 }
+
 //*/
 int main(int argc, char *argv[])
 {
