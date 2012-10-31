@@ -30,7 +30,6 @@ TEST(BruteForce, constructor) {
     EXPECT_EQ(voronoi.get_points()[1][0], 3);
     EXPECT_EQ(voronoi.get_points()[1][1], 4);
 }
-
 TEST(BruteForce, LineCross) {
 
     Straight line({1, 1}, {0, 0}); 
@@ -42,8 +41,9 @@ TEST(BruteForce, LineCross) {
     points.push_back({2, 0});
     points.push_back({-1, -1});
     Point point({0, 0});
-    EXPECT_TRUE(LineCross(line, point, side, ToPointers(points))== &points[0]);
+    EXPECT_TRUE(LineCross(line, point, (line == side), ToPointers(points))== &points[0]);
 }
+
 
 TEST(BruteForce, LineCross2) {
 
@@ -58,7 +58,7 @@ TEST(BruteForce, LineCross2) {
     points.push_back({cos(180 * M_PI / 180.0), sin(180 * M_PI / 180.0)});
 
     Point point({0, 0});
-    Point* cross(LineCross(line, point, side, ToPointers(points)));
+    Point* cross(LineCross(line, point, (line == side), ToPointers(points)));
     EXPECT_TRUE(cross == &points[0]);
 }
 
@@ -75,7 +75,7 @@ TEST(BruteForce, LineCross3) {
     points.push_back({cos(180 * M_PI / 180.0), sin(180 * M_PI / 180.0)});
 
     Point point({0, 0});
-    Point* cross(LineCross(line, point, side, ToPointers(points)));
+    Point* cross(LineCross(line, point, (line == side), ToPointers(points)));
     EXPECT_TRUE(cross == &points[0]);
 }
 
@@ -140,10 +140,11 @@ TEST(BruteForce, CellCircleBorder) {
     EXPECT_EQ((CellNeighbors(points, points[7])).size(), 3);
 }
 
-TEST(BruteForce, CellSquare) {
+TEST(BruteForce, CellSquareCenter) {
     data_points points;
 
-    Point point({0.00, 0.00});
+
+    points.push_back({0, 0});
 
     points.push_back({0, 1});
     points.push_back({0, 2});
@@ -157,7 +158,7 @@ TEST(BruteForce, CellSquare) {
     points.push_back({-1, 0});
     points.push_back({-2, 0});
 
-    auto neighbors(CellNeighbors(points, point));
+    auto neighbors(CellNeighbors(points, points[0]));
     EXPECT_EQ(neighbors.size(), 4);
 }
 
@@ -168,19 +169,19 @@ TEST(BruteForce, CellSquareCorner) {
     points.push_back({0, 0});
 
     points.push_back({0, 1});
-    points.push_back({0.0, 2.0});
+    points.push_back({0, 2});
 
     points.push_back({0, -1});
     points.push_back({0, -2});
 
-    points.push_back({1, 0});
+    points.push_back({1.2, 0});
     points.push_back({2, 0});
 
     points.push_back({-1, 0});
     points.push_back({-2, 0});
 
-    auto neighbors(CellNeighbors(points, points[3]));
-    EXPECT_EQ(neighbors.size(), 5);
+    auto neighbors(CellNeighbors(points, points[5]));
+    EXPECT_EQ(neighbors.size(), 6);
 }
 
 TEST(BruteForce, CellTriangle) {
@@ -200,6 +201,27 @@ TEST(BruteForce, CellTriangle) {
     EXPECT_EQ((CellNeighbors(points, points[1])).size(), 2);
     EXPECT_EQ((CellNeighbors(points, points[2])).size(), 2);
     EXPECT_EQ((CellNeighbors(points, points[3])).size(), 3);
+}
+
+TEST(BruteForce, SullivanMain) {
+    data_points points;
+
+//	float xValues[4] = {-22, -17,  4, 22};
+	//float yValues[4] = {-9 ,  31, 13,-5 };
+
+    points.push_back({-22, -9});
+
+    points.push_back({-17, 31});
+
+    points.push_back({4, 13});
+
+    points.push_back({22, -5});
+
+
+    EXPECT_EQ((CellNeighbors(points, points[0])).size(), 3);
+    EXPECT_EQ((CellNeighbors(points, points[1])).size(), 2);
+    EXPECT_EQ((CellNeighbors(points, points[2])).size(), 3);
+    EXPECT_EQ((CellNeighbors(points, points[3])).size(), 2);
 }
 
 int main(int argc, char *argv[])

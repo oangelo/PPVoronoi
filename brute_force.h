@@ -28,7 +28,7 @@ class Voronoi {
 std::vector<geometry::Point*> CellNeighbors(data_points& points, geometry::Point& point); 
 
 geometry::Point* LineCross(const geometry::Straight& line,  geometry::Point& point,  
-                           const geometry::Straight& side_line, std::vector<geometry::Point*> points); 
+                           const geometry::Point& point_ref, std::vector<geometry::Point*> points); 
 
 }
 
