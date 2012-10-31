@@ -57,17 +57,7 @@ std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points
     Straight midle_line_right(NormalVector(direction_init), point);
     DivideDots(midle_line_right, neighborhood, neighborhood_right, neighborhood_left);
 
-    std::cout << "neighborhood size: "<< points.size() << std::endl;
-    std::cout << "first neighbor: "<< (*nearest_neighbor) << std::endl;
-    for(auto iten: neighborhood)
-        std::cout << "points: " << (*iten) << std::endl;
-
-
-    std::cout << std::endl;
-
     //################## righ side ############################
-    std::cout << "############ right side ###############" << std::endl;
-    //neighborhood_right = OnNormalSide(midle_line_right, neighborhood_right);
 
     bool flag(true);
     Point* element(NULL);
@@ -77,9 +67,6 @@ std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points
     Point vertex(side == line);
     Point vertex_init(side == line);
     while(flag){
-       for(auto iten: neighborhood_right)
-            std::cout << "points: "<< (*iten) << std::endl;
-
         last_line = line;
         element = LineCross(line, point, vertex, neighborhood_right);
         if(element) {
@@ -89,40 +76,21 @@ std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points
             line = Straight(direction, half_direction + point);
             side = Straight(normal, *element);
             vertex = (last_line == line);
-
-        std::cout << "line vec: "<< line.get_normal() << std::endl;
-        std::cout << "line point: "<< line.get_point() << std::endl;
-        std::cout << "side: "<< side.get_normal() << std::endl;
-        std::cout << "side point: "<< side.get_point() << std::endl;
- 
-            std::cout << "element: "<< (*element) << std::endl;
-            std::cout << "encontro " << (line == side) << std::endl;
-            std::cout << "vertice " << vertex << std::endl;
             neighbors.push_back(element);
             neighborhood_right = OnNormalSide(side, neighborhood_right);
         }else{
             flag = false; 
         }
-
-        std::cout << "n neighbors " << neighbors.size() <<  std::endl;
-        std::cout <<  std::endl;
     }
-//****************left side **************************/
-    std::cout << "################# left side #######################" << std::endl;
-    Straight midle_line_left(NormalVectorInverted(direction_init), point);
-    //neighborhood_left = OnNormalSide(midle_line_left, neighborhood_left);
-    std::cout << "neig_left " <<  neighborhood_left.size() << std::endl;
 
+    //****************left side **************************/
+    Straight midle_line_left(NormalVectorInverted(direction_init), point);
     flag = true;
     element = NULL;
     line = first_line;
     side = midle_line_left;
     vertex = vertex_init;
     while(flag){
-       for(auto iten: neighborhood_left)
-            std::cout << "points: "<< (*iten)[0] << " " << (*iten)[1] << std::endl;
-
-
         last_line = line;
         element = LineCross(line, point, vertex, neighborhood_left);
         if(element) {
@@ -132,21 +100,11 @@ std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points
             line = Straight(direction, half_direction + point);
             side = Straight(normal, *element);
             vertex = (last_line == line);
-        std::cout << "line vec: "<< line.get_normal() << std::endl;
-        std::cout << "line point: "<< line.get_point() << std::endl;
-        std::cout << "side: "<< side.get_normal() << std::endl;
-        std::cout << "side point: "<< side.get_point() << std::endl;
- 
-
-            std::cout << "encontro " << (line == side) << std::endl;
-            std::cout << "vertice " << vertex << std::endl;
             neighbors.push_back(element);
             neighborhood_left = OnNormalSide(side, neighborhood_left);
-            std::cout << "element: "<< (*element) << std::endl;
         }else{
             flag = false; 
         }
-        std::cout <<  std::endl;
     }
 
     return neighbors;
@@ -157,41 +115,21 @@ geometry::Point* BruteForce::LineCross(const geometry::Straight& line, geometry:
     using namespace geometry;
 
     geometry::Point* neighbor = NULL;
-    //const Point point_ref(line == side_line);
-//    std::cout << "point ref " << point_ref[0] << " " << point_ref[1] << std::endl;
     double max_distance = DBL_MAX;
-/*    for(auto iten: points)
-        std::cout << "line_Cross: "<< (*iten)[0] << " " << (*iten)[1] << std::endl;
-    std::cout << "neighborhood.size "<< points.size() << std::endl;
-    std::cout <<  std::endl;
-*/
+
     for(auto element: points) {
-        //line of the element
         Vector direction(GenVector(point, *element));
         auto half_direction(direction / 2.0);
         Straight element_line(direction, half_direction + point);
         Point line_cross(element_line == line);
- //       std::cout << "element cadidate " << (*element)[0] << " " << (*element)[1] << std::endl;
         if(line_cross.size() > 1){
             double distance = EuclideanDistance(line_cross, point_ref); 
-//            std::cout << "cross " << line_cross[0] << " " << line_cross[1] << std::endl;
-//            std::cout << "distance "<< distance << std::endl;
-            //std::cout << "side "<< NormalSide(line_cross, side_line)<< std::endl;
             if( max_distance > distance) {
                 max_distance = distance;
                 neighbor = element;
-/*                std::cout << "element direction " << element_line.get_normal()[0] << " " << element_line.get_normal()[1] << std::endl;
-                std::cout << "element point " << element_line.get_point()[0] << " " << element_line.get_point()[1] << std::endl;
-                std::cout << std::endl;
-                std::cout << "line direction " << line.get_normal()[0] << " " << line.get_normal()[1] << std::endl;
-                std::cout << "line point " << line.get_point()[0] << " " << line.get_point()[1] << std::endl;
-                std::cout << std::endl;
-                std::cout << "neighbor " << (*neighbor)[0] << " " << (*neighbor)[1] << std::endl;
-//                */
             }
         }
         
     }
-    //std::cout << (*neighbor)[0] << " " << (*neighbor)[1] << std::endl;
     return neighbor;
 }
