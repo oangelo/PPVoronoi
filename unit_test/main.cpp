@@ -24,7 +24,7 @@ TEST(BruteForce, constructor) {
     points.push_back({1,2});
     points.push_back({3,4});
 
-    Voronoi voronoi(points);
+    Voronoi<Point> voronoi(points);
 
     EXPECT_EQ(voronoi.size(), 2);
     EXPECT_EQ(voronoi.get_points()[0][0], 1);
@@ -189,6 +189,38 @@ TEST(BruteForce, SullivanMain) {
     EXPECT_EQ((CellNeighbors(points, points[1])).size(), 2);
     EXPECT_EQ((CellNeighbors(points, points[2])).size(), 3);
     EXPECT_EQ((CellNeighbors(points, points[3])).size(), 2);
+}
+
+TEST(BruteForce, NeighborsVoronoi) {
+    data_points points;
+    points.push_back({-22, -9});
+    points.push_back({-17, 31});
+    points.push_back({4, 13});
+    points.push_back({22, -5});
+
+    Voronoi<Point> voro(points);
+    std::unordered_map<geometry::Point*, std::set<geometry::Point*>>  neighbors(voro.Neighbors());
+
+    EXPECT_EQ(neighbors[&points[0]].size(), 3);
+    EXPECT_EQ(neighbors[&points[1]].size(), 2);
+    EXPECT_EQ(neighbors[&points[2]].size(), 3);
+    EXPECT_EQ(neighbors[&points[3]].size(), 2);
+}
+
+TEST(BruteForce, NeighborsVoronoiPointer) {
+    data_points points;
+    points.push_back({-22, -9});
+    points.push_back({-17, 31});
+    points.push_back({4, 13});
+    points.push_back({22, -5});
+
+    Voronoi<Point> voro(ToPointers(points));
+    std::unordered_map<geometry::Point*, std::set<geometry::Point*>>  neighbors(voro.Neighbors());
+
+    EXPECT_EQ(neighbors[&points[0]].size(), 3);
+    EXPECT_EQ(neighbors[&points[1]].size(), 2);
+    EXPECT_EQ(neighbors[&points[2]].size(), 3);
+    EXPECT_EQ(neighbors[&points[3]].size(), 2);
 }
 
 int main(int argc, char *argv[])

@@ -1,29 +1,46 @@
-#include "brute_force.h"
+//#include "brute_force.h"
 
-BruteForce::Voronoi::Voronoi(const data_points & data): points(data) {
-    
+template <class Type>
+BruteForce::Voronoi<Type>::Voronoi(const std::vector<Type*>& data): points() {
+    for(size_t i = 0; i < data.size(); ++i) {
+        points.push_back({(*data[i])[0], (*data[i])[1]});
+    }
+    for(size_t i = 0; i < data.size(); ++i) 
+        pointer_translate[&points[i]] = data[i]; 
 }
 
-const BruteForce::data_points &  BruteForce::Voronoi::get_points() const {
+template <class Type>
+BruteForce::Voronoi<Type>::Voronoi(std::vector<Type>& data): points() {
+    for(size_t i = 0; i < data.size(); ++i) {
+        points.push_back({(data[i])[0], (data[i])[1]});
+    }
+    for(size_t i = 0; i < data.size(); ++i) {
+        pointer_translate[&points[i]] = &data[i]; 
+    }
+}
+
+template <class Type>
+const BruteForce::data_points &  BruteForce::Voronoi<Type>::get_points() const {
     return points;
 }
 
-size_t BruteForce::Voronoi::size() const {
+template <class Type>
+size_t BruteForce::Voronoi<Type>::size() const {
     return points.size();
 }
 
-std::unordered_map<geometry::Point*, std::set<geometry::Point*>> BruteForce::Voronoi::neighbors() {
+template <class Type>
+std::unordered_map<geometry::Point*, std::set<geometry::Point*>> BruteForce::Voronoi<Type>::Neighbors() {
+
     using namespace geometry;
     std::unordered_map<geometry::Point*, std::set<geometry::Point*>> result;
     auto pointers(ToPointers(points));
     for(auto iten(points.begin()); iten < points.end(); ++iten) {
         std::set<geometry::Point*> neighbors_set;
         auto cell_neighbors(CellNeighbors(points, *iten));
-        std::cout << "cell nei"<< cell_neighbors.size() << std::endl;
-        for(auto element: cell_neighbors)
-            neighbors_set.insert(element); 
-        result[&(*iten)] = neighbors_set;
-        std::cout << "set "<< neighbors_set.size() << std::endl;
+        for(auto &element: cell_neighbors)
+            neighbors_set.insert(pointer_translate[element]); 
+        result[pointer_translate[&(*iten)]] = neighbors_set;
     }
     return result;
 }
