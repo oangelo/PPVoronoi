@@ -1,10 +1,10 @@
 template <class Type>
-BruteForce::Voronoi<Type>::Voronoi(const std::vector<Type*>& data): points() {
+BruteForce::Voronoi<Type>::Voronoi(std::vector<Type*>& data): points() {
     for(size_t i = 0; i < data.size(); ++i) {
         points.push_back({(*data[i])[0], (*data[i])[1]});
     }
     for(size_t i = 0; i < data.size(); ++i) 
-        pointer_translate[&points[i]] = data[i]; 
+        pointer_translate[&points[i]] = (data)[i]; 
 }
 
 template <class Type>
@@ -34,7 +34,7 @@ std::unordered_map<Type*, std::set<Type*>> BruteForce::Voronoi<Type>::Neighbors(
     std::unordered_map<Type*, std::set<Type*>> result;
     auto pointers(ToPointers(points));
     for(auto iten(points.begin()); iten < points.end(); ++iten) {
-        std::set<geometry::Point*> neighbors_set;
+        std::set<Type*> neighbors_set;
         auto cell_neighbors(CellNeighbors(points, *iten));
         for(auto &element: cell_neighbors)
             neighbors_set.insert(pointer_translate[element]); 

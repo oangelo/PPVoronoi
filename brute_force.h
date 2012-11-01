@@ -17,7 +17,7 @@ typedef std::vector<geometry::Point> data_points;
 template <class Type>
 class Voronoi {
     public:
-        Voronoi(const std::vector<Type*>& data);
+        Voronoi(std::vector<Type*>& data);
         Voronoi(std::vector<Type>& data);
         
         const data_points & get_points() const;
@@ -26,7 +26,7 @@ class Voronoi {
 
     private:
         data_points points;
-        std::map<Type*, geometry::Point*> pointer_translate;
+        std::map<geometry::Point*, Type*> pointer_translate;
 };
 
 std::vector<geometry::Point*> CellNeighbors(data_points& points, geometry::Point& point); 
