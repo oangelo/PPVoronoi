@@ -22,7 +22,7 @@ class Voronoi {
         
         const data_points & get_points() const;
         size_t size() const;
-        std::unordered_map<geometry::Point*, std::set<geometry::Point*>> Neighbors();
+        std::unordered_map<Type*, std::set<Type*>> Neighbors();
 
     private:
         data_points points;

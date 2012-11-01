@@ -30,10 +30,10 @@ size_t BruteForce::Voronoi<Type>::size() const {
 }
 
 template <class Type>
-std::unordered_map<geometry::Point*, std::set<geometry::Point*>> BruteForce::Voronoi<Type>::Neighbors() {
+std::unordered_map<Type*, std::set<Type*>> BruteForce::Voronoi<Type>::Neighbors() {
 
     using namespace geometry;
-    std::unordered_map<geometry::Point*, std::set<geometry::Point*>> result;
+    std::unordered_map<Type*, std::set<Type*>> result;
     auto pointers(ToPointers(points));
     for(auto iten(points.begin()); iten < points.end(); ++iten) {
         std::set<geometry::Point*> neighbors_set;
