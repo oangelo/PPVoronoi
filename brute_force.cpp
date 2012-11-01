@@ -1,49 +1,4 @@
-//#include "brute_force.h"
-
-template <class Type>
-BruteForce::Voronoi<Type>::Voronoi(const std::vector<Type*>& data): points() {
-    for(size_t i = 0; i < data.size(); ++i) {
-        points.push_back({(*data[i])[0], (*data[i])[1]});
-    }
-    for(size_t i = 0; i < data.size(); ++i) 
-        pointer_translate[&points[i]] = data[i]; 
-}
-
-template <class Type>
-BruteForce::Voronoi<Type>::Voronoi(std::vector<Type>& data): points() {
-    for(size_t i = 0; i < data.size(); ++i) {
-        points.push_back({(data[i])[0], (data[i])[1]});
-    }
-    for(size_t i = 0; i < data.size(); ++i) {
-        pointer_translate[&points[i]] = &data[i]; 
-    }
-}
-
-template <class Type>
-const BruteForce::data_points &  BruteForce::Voronoi<Type>::get_points() const {
-    return points;
-}
-
-template <class Type>
-size_t BruteForce::Voronoi<Type>::size() const {
-    return points.size();
-}
-
-template <class Type>
-std::unordered_map<Type*, std::set<Type*>> BruteForce::Voronoi<Type>::Neighbors() {
-
-    using namespace geometry;
-    std::unordered_map<Type*, std::set<Type*>> result;
-    auto pointers(ToPointers(points));
-    for(auto iten(points.begin()); iten < points.end(); ++iten) {
-        std::set<geometry::Point*> neighbors_set;
-        auto cell_neighbors(CellNeighbors(points, *iten));
-        for(auto &element: cell_neighbors)
-            neighbors_set.insert(pointer_translate[element]); 
-        result[pointer_translate[&(*iten)]] = neighbors_set;
-    }
-    return result;
-}
+#include "brute_force.h"
 
 std::vector<geometry::Point*>  BruteForce::CellNeighbors(BruteForce::data_points& points, geometry::Point& point) { 
 
@@ -140,7 +95,7 @@ geometry::Point* BruteForce::LineCross(const geometry::Straight& line, geometry:
         Straight element_line(direction, half_direction + point);
         Point line_cross(element_line == line);
         if(line_cross.size() > 1){
-            double distance = EuclideanDistance(line_cross, point_ref); 
+            double distance = geometry::EuclideanDistance(line_cross, point_ref); 
             if( max_distance > distance) {
                 max_distance = distance;
                 neighbor = element;

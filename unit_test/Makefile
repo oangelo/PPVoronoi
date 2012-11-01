@@ -4,7 +4,7 @@
 CC = g++
 CFLAGS = -c -Wall  -std=c++11  -fpermissive
 LDFLAGS = -lgtest -lgsl -lgslcblas -lm -lpthread
-SOURCES =  ../geometric_utils/geometry.cpp  main.cpp
+SOURCES =  ../geometric_utils/geometry.cpp ../brute_force.cpp  main.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 EXECUTABLE = test 
 

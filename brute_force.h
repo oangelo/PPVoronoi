@@ -36,6 +36,6 @@ geometry::Point* LineCross(const geometry::Straight& line,  geometry::Point& poi
 
 }
 
-#include "brute_force.cpp"
+#include "brute_force_template.cpp"
 
 #endif /* BRUTE_FORCE_H */
