@@ -214,7 +214,7 @@ TEST(BruteForce, NeighborsVoronoiPointer) {
     points.push_back({4, 13});
     points.push_back({22, -5});
 
-    Voronoi<Point> voro(ToPointers(points));
+    Voronoi<Point> voro(points);
     std::unordered_map<geometry::Point*, std::set<geometry::Point*>>  neighbors(voro.Neighbors());
 
     EXPECT_EQ(neighbors[&points[0]].size(), 3);

@@ -10,10 +10,10 @@ BruteForce::Voronoi<Type>::Voronoi(std::vector<Type*>& data): points() {
 template <class Type>
 BruteForce::Voronoi<Type>::Voronoi(std::vector<Type>& data): points() {
     for(size_t i = 0; i < data.size(); ++i) {
-        points.push_back({(data[i])[0], (data[i])[1]});
+        points.push_back({data[i][0], data[i][1]});
     }
     for(size_t i = 0; i < data.size(); ++i) {
-        pointer_translate[&points[i]] = &data[i]; 
+        pointer_translate[&(points[i])] = &(data[i]); 
     }
 }
 
