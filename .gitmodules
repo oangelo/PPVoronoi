@@ -1,3 +1,6 @@
 [submodule "geometric_utils"]
 	path = geometric_utils
 	url = git@github.com:oangelo/GeometryTools.git
+[submodule "SysUtilsPlus"]
+	path = SysUtilsPlus
+	url = git@github.com:oangelo/SysUtilsPlus.git

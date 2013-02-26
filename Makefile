@@ -4,7 +4,7 @@
 CC = g++
 CFLAGS = -c -Wall  -std=c++11  -fpermissive
 LDFLAGS = -lgtest -lgsl -lgslcblas -lm -lpthread
-SOURCES =  main.cpp  VoronoiDiagramGenerator.cpp 
+SOURCES =  main.cpp  VoronoiDiagramGenerator.cpp  SysUtilsPlus/utils.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 EXECUTABLE = voronoi 
 
